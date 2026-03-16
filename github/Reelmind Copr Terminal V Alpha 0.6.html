@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reelmind Corp Command System</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Segoe UI;
+            background: #0a0f1a;
+            color: #00eaff;
+        }
+
+        /* TOP BAR */
+
+        .topbar {
+            height: 60px;
+            background: #111827;
+            display: flex;
+            align-items: center;
+            padding-left: 20px;
+            border-bottom: 2px solid #00eaff;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        /* LOGIN */
+
+        .login {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            background: #111827;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 30px #00eaff55;
+        }
+
+            .login input {
+                display: block;
+                width: 250px;
+                margin: 10px 0;
+                padding: 10px;
+                border: none;
+                border-radius: 6px;
+            }
+
+            .login button {
+                width: 100%;
+                padding: 10px;
+                background: #00eaff;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+            }
+
+        /* DASHBOARD */
+
+        .dashboard {
+            display: none;
+        }
+
+        .sidebar {
+            position: absolute;
+            top: 60px;
+            left: 0;
+            width: 220px;
+            bottom: 0;
+            background: #111827;
+            border-right: 2px solid #00eaff33;
+        }
+
+            .sidebar button {
+                width: 100%;
+                padding: 15px;
+                background: none;
+                border: none;
+                color: #00eaff;
+                text-align: left;
+                cursor: pointer;
+            }
+
+                .sidebar button:hover {
+                    background: #1f2937;
+                }
+
+        .main {
+            margin-left: 220px;
+            margin-top: 60px;
+            padding: 20px;
+        }
+
+        /* TERMINAL */
+
+        .terminal {
+            background: black;
+            border: 2px solid #00eaff;
+            padding: 20px;
+            height: 400px;
+            overflow-y: auto;
+            font-family: Consolas, monospace;
+            white-space: pre-wrap;
+            line-height: 1.4;
+            letter-spacing: 0.5px;
+        }
+
+        /* DOCUMENT PANEL */
+
+        .docs {
+            margin-top: 20px;
+        }
+
+            .docs button {
+                margin: 5px;
+                padding: 8px 14px;
+            }
+    </style>
+</head>
+
+<body>
+
+    <div class="topbar">
+        <div class="logo">REELMIND CORP COMMAND SYSTEM</div>
+    </div>
+
+    <div class="login" id="loginPanel">
+
+        <h2>Operator Login</h2>
+
+        <input id="user" placeholder="Operator ID">
+        <input id="pass" type="password" placeholder="Access Key">
+
+        <button onclick="login()">ACCESS</button>
+
+        <p id="status"></p>
+
+    </div>
+
+    <div class="dashboard" id="dashboard">
+
+        <div class="sidebar">
+
+            <button onclick="openTerminal()">Terminal</button>
+            <button onclick="openDocs()">Documents</button>
+
+        </div>
+
+        <div class="main">
+
+            <div id="terminalView">
+
+                <h2>Command Terminal</h2>
+
+                <div class="terminal" id="output"></div>
+
+            </div>
+
+            <div id="docsView" style="display:none">
+
+                <h2>Documents</h2>
+
+                <div id="docButtons" class="docs"></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        /* USER DATABASE */
+
+        const users = {
+
+            Travis: {
+                password: "Travis Reelmind",
+                rank: "Owner",
+                team: "Head of Reelmind Corp.",
+                clearance: 10
+            },
+
+            Mike: {
+                password: "Lt.Mike",
+                rank: "Lt.Mike",
+                team: "CO-Owner",
+                clearance: 10
+            },
+
+            AD: {
+                password: "AD",
+                rank: "Administrative Assistant",
+                team: "Administration Division",
+                clearance: 9
+            },
+
+            RAD: {
+                password: "RAD",
+                rank: "Archive Assistant",
+                team: "Records & Archives Division",
+                clearance: 8
+            },
+
+            IA: {
+                password: "IA",
+                rank: "IA Recruit",
+                team: "Internal Affairs",
+                clearance: 7.5
+            },
+
+            BHD: {
+                password: "BHD",
+                rank: "Black Halo Recruit",
+                team: "Black Halo Division",
+                clearance: 7
+            },
+
+            DSG: {
+                password: "DSG",
+                rank: "Directorate Guard Recruit",
+                team: "Protection Personnel [DSG] [LR]",
+                clearance: 6.5
+            },
+
+            PMD: {
+                password: "PMD",
+                rank: "Personal Medical Intern",
+                team: "Personal Medical Division",
+                clearance: 6
+            },
+
+            GRD: {
+                password: "GRD",
+                rank: "Genetic Research Intern",
+                team: "Genetic Research Division",
+                clearance: 5.5
+            },
+
+            AIU: {
+                password: "AIU",
+                rank: "Anomaly Field Recruit",
+                team: "Anomaly Investigation Unit",
+                clearance: 5
+            },
+
+            CRT: {
+                password: "CRT",
+                rank: "Containment Recruit ",
+                team: "Response Operators [CRT] [LR]",
+                clearance: 4
+            },
+
+            HCU: {
+                password: "HCU",
+                rank: "Hazard Control Recruit ",
+                team: "Hazard Response Personnel [HUC] [LR]",
+                clearance: 3.5
+            },
+
+            CWD: {
+                password: "CWD",
+                rank: "Cyber Recruit ",
+                team: "Cyber Technicians [CWD] [LR]",
+                clearance: 3
+            },
+
+            ETD: {
+                password: "ETD",
+                rank: "Junior Research Assistant ",
+                team: "Research Personnel [ETD] [LR]",
+                clearance: 3
+            },
+
+            Logist: {
+                password: "Logist",
+                rank: "Logistics Recruit [LR]",
+                team: "Logistics Personnel",
+                clearance: 1
+            },
+
+            Engi: {
+                password: "Engi",
+                rank: "Engineering Recruit  [LR]",
+                team: "Junior Engineers",
+                clearance: 1.2
+            },
+
+            Medic: {
+                password: "Medic",
+                rank: "Medical Intern  [LR]",
+                team: "Medical Support Staff ",
+                clearance: 1.3
+            },
+
+            Scientist: {
+                password: "Scientist",
+                rank: "Research Intern [LR]",
+                team: "Junior Research Division",
+                clearance: 1.4
+            },
+
+            BaseSecurity: {
+                password: "Security",
+                rank: "Security Recruit [LR]",
+                team: "Base Security",
+                clearance: 1.5
+            },
+
+            RBST: {
+                password: "ST",
+                rank: "Junior Security Trainer  [Security Trainer]",
+                team: "Reelmind Base Security Trainers ",
+                clearance: 2
+            },
+
+            Guest: {
+                password: "Guest",
+                rank: "Visitor",
+                team: "Guest",
+                clearance: 0
+            }
+
+        };
+
+        let currentUser = null;
+
+        /* DOCUMENT DATABASE */
+
+        const documents = {
+
+            doc1: {
+                level: 0,
+                title: "Guest Information",
+                text: `Owner: Travis Reelmind  CO-Owner: Lt.Mike
+
+classification: Level 0 - Public Access
+
+===================================
+Reelmind Corp. VISITOR NOTICE
+===================================
+
+Welcome to a Reelmind Corp. Installation.
+
+You are currently inside a restricted operational zone.
+
+All visitors must follow instructions from
+Reelmind Corp. personnel at all times.
+
+Rules for Guests:
+
+1. Remain inside authorized visitor areas.
+2. Do not enter restricted sectors.
+3. Do not interfere with operations.
+4. Follow all orders given by security personnel.
+5. Photography or recording may be restricted.
+
+If an emergency protocol is activated:
+
+• Remain calm
+• Follow evacuation instructions
+• Move to the nearest safe zone
+
+Failure to follow base regulations may result
+in removal from the facility.
+
+Join The Discord Server For More Information:
+
+https://discord.gg/pKa8RyNQHg
+
+Thank you for your cooperation.
+
+[Travis Reelmind] [Lt.Mike]
+`
+},
+
+            doc2: {
+                level: 1.5,
+                title: "Base Security Tree",
+                text: `Base Security Tree
+
+classification: Level 1.5 -Base Security Personnel
+
+Reelmind Base Security Division Rank Tree LR to Command Rank
+
+Security LR  clareance Level 1
+
+Security Recruit
+Training stage
+Learning patrol routes and protocols
+
+Security Guard
+Basic patrol duties
+Monitors entrances and checkpoint
+
+Senior Security Guard
+Experienced guard
+Assists new recruits
+Handles minor incidents
+
+Security MR [Can Apply For Cyber Warfare Division]  
+
+Security Specialist
+Advanced patrol duties
+Handles restricted access zones
+
+Security Supervisor
+Leads patrol teams
+Coordinates guards during incidents
+
+Security Lieutenant
+Manages shift operations
+Reports directly to command staff
+
+Security HR [Can Apply For Hazard Control Unit]
+
+Security Captain
+Oversees multiple patrol teams
+Responsible for facility sectors
+
+Security Major
+Coordinates large security operations
+Works with command divisions
+
+Security Commander
+Controls overall base security
+Approves lockdown protocols
+
+Security Command Rank
+
+Chief of Base Security
+Leader of the Base Security Division
+Direct advisor to facility leadership
+
+Director of Security Operations
+Oversees all security strategy
+Works with ownership and high command
+`
+},
+
+            doc3: {
+                level: 1.4,
+                title: "Research Division Rank Tree",
+                text: `Research Division Rank Tree
+
+classification: Level 1.4 - Research Personnel
+
+Junior Research Division [LR]
+
+Research Intern
+New scientists learning procedures
+Assists with experiments and documentation
+
+Junior Scientist
+Performs small-scale experiments
+Works under supervision
+
+Scientist
+Performs small-scale experiments
+Works under supervision
+
+Advanced Research Division  [MR]
+
+Senior Scientist
+Leads small research projects
+Supervises Junior Scientists
+
+Lead Scientist
+Oversees research teams
+Responsible for experiment approval
+
+Principal Scientist  ----------------[Can Apply For Experimental Technology Division (ETD)] [Send Apply Request in ⁠support [Discord Server] ]
+Designs complex experiments
+Works closely with facility leadership
+
+Executive Research Division [HR]
+
+Research Director
+Manages multiple research teams
+Authorizes high-risk experiments
+
+Chief Science Officer
+Head of all scientific operations
+Reports directly to Facility Administration`
+            },
+
+            doc4: {
+                level: 1.3,
+                title: "Medical Department Rank Tree",
+                text: `Medic Rank Tree
+
+classification: Level 1.3 - Medical Personnel
+
+Medical Support Staff [LR]
+
+Medical Intern
+raining medic
+Assists doctors and nurses
+
+Medical Assistant
+Helps with basic treatment
+Supports medical staff during emergencies
+
+Field Medic
+Responds to injuries in the facility
+Works closely with Security team
+
+Medical Professionals [MR]
+
+Nurse
+Provides patient care
+Assists in surgeries and treatment
+
+Senior Medic
+Experienced emergency responder
+Supervises Field Medics
+
+Medical Officer ---------------------------[Can Apply For Personal Medical Division][Send Apply Request in ⁠support [Discord Server] ]
+Handles advanced treatment
+Responsible for medical decisions during incident
+
+Medical Command [HR]
+
+Head Medic
+Leads the medical team
+Oversees the medical bay operations
+
+Chief Medical Officer
+Highest medical authority in the facility
+Reports directly to Facility Administration`
+            },
+
+            doc5: {
+                level: 1.2,
+                title: "Engineering-corps-rank-structure",
+                text: `Engineer Rank Tree
+
+classification: Level 1.2 - Engineering Personnel
+
+Junior Engineers [LR]
+
+Engineering Recruit 
+Junior Technician 
+Field Mechanic
+Systems Technician
+
+Role:
+Basic repairs
+Assist senior engineers
+Maintain equipment
+
+Professional Engineers [MR]
+
+Engineering Specialist 
+Systems Engineer
+Infrastructure Engineer 
+Senior Systems Enginee
+
+Role:
+Maintain facility systems
+Repair security doors, alarms, reactors
+Lead small engineering teams
+
+
+Command Engineers [HR]
+
+Chief Systems Engineer
+Engineering Operations Commander 
+Director of Engineering 
+
+Role:
+Oversee entire facility infrastructure
+Approve large repairs and upgrades
+Manage all engineering personnel`
+            },
+
+            doc6: {
+                level: 1,
+                title: "Logistics-command-rank-structure",
+                text: `Logistic Rank Tree
+
+classification: Level 1 - Logistics Personnel
+                
+Logistics Personnel [LR]
+
+Logistics Recruit 
+Supply Assistant
+Warehouse Operator 
+Transport Operator 
+
+Duties
+Manage supply crates
+Load/unload vehicles
+Basic inventory tracking
+
+Logistics Specialists [MR]
+
+Supply Specialist 
+Transport Coordinator 
+Logistics Supervisor
+Senior Logistics Officer 
+
+Duties
+Coordinate supply deliveries
+Manage supply depots
+Oversee LR personnel
+
+Logistics Command [HR]
+
+Logistics Operations Commander 
+Director of Logistics
+Chief Logistics Commander 
+
+Duties
+Control all supply chains
+Manage large-scale deployments
+Coordinate with military divisions`
+            },
+
+            doc7: {
+                level: 2,
+                title: "Reelmind Base Security Trainer Infos",
+                text: `Security Trainer Information
+
+classification: Level 2
+
+Reelmind Base Security Trainers 
+Junior Security Trainer
+
+Assist training sessions
+Help recruits during simulations
+Run basic patrol training
+Support Senior Trainers
+
+Security Trainer 
+
+Lead recruit training
+Conduct patrol and response drills
+Run written exams
+Approve Recruit → Guard promotions
+
+Senior Security Trainer 
+
+Lead advanced training programs
+Train MR personnel
+Certify new trainers
+Oversee training standards
+
+Chief Training Officer 
+
+Head of all Base Security training
+Designs training programs
+Approves trainer appointments
+Reports to Chief of Base Security`
+            },
+
+            doc8: {
+                level: 3,
+                title: "Reelmind Experimental Technology Division Infos/ Cyber Warfare Division",
+                text: `Experimental Technology Division / Cyber Warfare Division Rank Tree
+                
+classification: Level 3
+
+Research Personnel [ETD] [LR]
+
+Junior Research Assistant 
+Technology Technician 
+Prototype Technician
+Field Testing Assistant 
+
+Duties
+Assist scientists
+Build prototypes
+Prepare testing environments
+Record experiment results
+
+Technology Specialists [ETD] [MR]
+
+Research Specialist 
+Prototype Engineer 
+Experimental Systems Analyst 
+Senior Technology Officer 
+
+Duties
+Design experimental systems
+Manage prototype development
+Lead testing operations
+Oversee LR personnel
+
+Research Command [ETD] [HR]
+
+Experimental Operations Commander 
+Director of Experimental Technology 
+Chief Science Commander 
+
+Duties
+Approve research projects
+Control classified technology programs
+Coordinate with High Command
+
+classification: Level 3
+
+Division Role:
+Protect and control all digital systems of the Furr Army and Reelmind facilities.
+Main Responsibilities
+defend military networks
+detect cyber attacks
+conduct digital warfare operations
+manage surveillance systems
+control communication infrastructure
+
+Cyber Technicians [CWD] [LR]
+
+Cyber Recruit
+Network Technician
+Cyber Security Operator
+Systems Monitor
+
+Duties
+monitor servers
+detect suspicious activity
+assist cyber specialists
+maintain digital infrastructure
+
+Cyber Specialists [CWD] [MR]
+
+Cyber Warfare Specialist
+Network Defense Officer
+Cyber Intelligence Analyst
+Senior Cyber Officer
+
+Duties
+defend networks against attacks
+perform counter-hacking operations
+track enemy cyber threats
+supervise LR personnel
+
+Cyber Command [CWD] [HR]
+
+Cyber Operations Commander 
+Director of Cyber Warfare 
+Chief Cyber Strategist 
+
+Duties
+plan digital warfare operations
+control communication security
+coordinate with Intelligence Division`
+            },
+
+            doc9: {
+                level: 3.5,
+                title: "Reelmind Hazard Control Unit Infos",
+                text: `Hazard Control Unit Rank Tree
+
+classification: Level 3.5
+
+Hazard Response Personnel [HCU] [LR]
+
+Hazard Control Recruit
+Decontamination Specialist
+Hazard Technician
+Containment Operator
+
+Duties
+Decontaminate equipment and personnel
+Secure contaminated areas
+Assist senior teams during emergencies
+
+Hazard Specialists [HCU] [MR]-----------------[Can Apply For Containment Response Team [CRT] ][Send Apply Request in ⁠support Dicord Server ]
+
+Hazard Response Specialist
+Containment Supervisor
+Biohazard Control Officer
+Senior Hazard Officer
+
+Duties
+Lead containment teams
+Manage quarantine zones
+Handle chemical or biological threats
+
+Hazard Command  [HCU] [HR]
+
+Hazard Operations Commander 
+Director of Hazard Control 
+Chief Containment Commander 
+
+Duties
+Command major hazard responses
+Coordinate with Medical Corps and Engineering
+Approve quarantine protocols`
+            },
+
+            doc10: {
+                level: 4,
+                title: "Containment Response Team Infos",
+                text: `Containment Response Team Rank Tree
+                
+classification: Level 4
+
+Containment Response Team [CRT]
+
+Status: Emergency Deployment Unit
+
+The Containment Response Team is an elite rapid-response force deployed when normal divisions cannot control a threat.
+Mission
+Secure containment breaches
+Neutralize dangerous entities or technology
+Assist Hazard Control Unit during major incidents
+Protect experimental facilities
+Prevent facility-wide disasters
+
+Response Operators [CRT] [LR]
+
+Containment Recruit
+Containment Operator
+Containment Specialist
+Containment Assault Operator
+
+Role
+Secure breach zones
+escort scientists and civilians
+assist HCU teams
+
+Tactical Specialists [CRT] [MR]
+
+Containment Tactical Specialist
+Containment Team Leader
+Containment Strike Officer
+Senior Containment Officer
+
+Role
+lead response teams
+plan breach containment
+coordinate with MP and Security
+
+Command [CRT] [HR]
+
+Containment Operations Commander 
+Director of Emergency Containment 
+Chief Containment Strategist 
+
+Role
+command large-scale containment events
+authorize lockdown procedures
+coordinate military divisions`
+            },
+
+            doc11: {
+                level: 5,
+                title: "Anomaly Investigation Unit Infos",
+                text: `Anomaly Investigation Unit Rank Tree
+
+classification 5
+
+Anomaly Investigation Unit 
+
+Division Role:
+Investigate and document unidentified events, anomalies, experimental accidents, and unknown entities.
+
+Main Responsibilities:
+investigate strange events
+analyze anomalous technology
+document unexplained incidents
+assist containment teams
+report to High Command
+
+Anomaly Field Recruit
+Entry-level investigator.
+
+Duties
+assist investigations
+gather evidence
+record incident reports
+
+Junior Anomaly Investigator
+First operational investigator.
+
+Duties
+conduct basic investigations
+monitor anomaly zones
+support containment teams
+
+Anomaly Investigator
+Fully trained investigator.
+
+Duties
+analyze anomalies
+lead small investigation teams
+collect anomaly data
+
+Senior Anomaly Investigator
+Experienced specialist.
+
+Duties
+supervise investigations
+coordinate with Hazard Control and Intelligence
+write classified report
+
+Anomaly Operations Commander
+Leads large investigation operations.
+
+Duties
+manage anomaly response teams
+authorize investigation protocols
+report to High Command
+
+Director of Anomalous Research
+Highest authority of the AIU.
+
+Duties:
+oversee all anomaly investigations
+approve classified research
+
+coordinate with:
+Experimental Technology Division
+Containment Response Team
+Intelligence Agency`
+            },
+
+            doc12: {
+                level: 5.5,
+                title: "Genetic Research Division Infos",
+                Text: `Genetic Research Division Rank Tree
+
+classification: Level 5.5
+
+Genetic Research Division
+Division Role:
+Conduct advanced genetic research, biological experiments, and anomaly DNA analysis for Reelmind Corporation.
+
+Main Responsibilities
+study genetic mutations
+develop biological enhancements
+analyze anomaly DNA
+support medical and experimental divisions
+create bio-defense technology
+
+Works with:
+Scientists
+Medic Division
+Anomaly Investigation Unit
+Hazard Control Unit
+Experimental Technology Division
+
+Genetic Research Intern
+Entry-level researcher.
+
+Duties
+assist senior scientists
+collect biological samples
+document experiments
+
+Junior Genetic Researcher
+Duties
+assist genetic experiments
+analyze DNA samples
+maintain laboratory equipment
+
+Genetic Scientist
+Duties
+conduct genetic experiments
+research biological anomalies
+write scientific reports
+
+Senior Genetic Scientist
+Duties
+supervise research projects
+manage laboratory teams
+analyze complex genetic mutations
+
+Chief Genetic Researcher
+Duties
+lead major research programs
+approve experimental procedures
+coordinate with other division
+
+Director of Genetic Research
+Highest authority of the division.
+
+Responsibilities
+control all genetic research projects
+approve high-risk experiments
+report findings to Reelmind Leadership`
+            },
+
+            doc13: {
+                level: 6,
+                title: "Personal Medical Division Infos",
+                text: `Personal Medical Division Rank Tree
+                
+classification: Level 6 [Classified]
+
+Personal Medical Division 
+
+Personal Medical Intern
+Assists the Personal Doctor
+Handles medical equipment and preparatio
+
+Executive Medical Assistant
+Provides medical support during operations
+Monitors the health status of high comman
+
+Personal Physician
+Direct doctor assigned to Travis ReelMind
+Responsible for health monitoring and treatment
+Has priority medical authority during emergencies
+
+Chief Personal Physician
+Senior personal doctor for the command staff
+Supervises all personal medical staff
+Reports directly to High Command`
+            },
+
+            doc14: {
+                level: 6.5,
+                title: "Directorate Security Guard Infos",
+                text: `Directorate Security Guard Rank Tree
+
+classification: Level 6.6 [Classified]
+
+Directorate Security Guard 
+
+Division Role:
+Provide close protection for VIPs, including directors, commanders, and important scientists.
+
+Main Responsibilities:
+Protect VIP personnel
+Escort high-ranking officials
+Secure directorate areas
+Prevent assassination attempts
+Guard classified meetings
+
+Protection Personnel [LR]
+
+Directorate Guard Recruit
+VIP Security Guard
+Protection Operator
+Escort Security Specialist 
+
+Duties
+escort VIPs
+guard directorate offices
+secure meeting rooms
+monitor suspicious activit
+
+Security Specialists [MR]
+
+VIP Protection Specialist
+Security Team Leader
+Executive Protection Officer
+Senior Protection Officer 
+
+Duties
+lead escort teams
+coordinate travel security
+manage security routes
+supervise LR personnel
+
+Directorate Protection Command [HR]
+
+Directorate Security Commander 
+Chief Protection Director 
+Director of Executive Security 
+
+Duties
+plan VIP security operations
+approve protection protocols
+coordinate with Military Police and Intelligence`
+            },
+
+            doc15: {
+                level: 7,
+                title: "Black Halo Division Infos",
+                text: `Black Halo Division Rank Tree
+
+classification. Level 7 [Classified] [Elite Law Enforcement]
+
+Black Halo Division
+Division Role:
+Elite law enforcement and internal security force for the facility and army.
+
+Main Responsibilities
+arrest high-risk suspects
+suppress internal threats
+assist Military Police during major incidents
+protect classified areas
+conduct high-risk raids
+
+Black Halo Recruit
+Entry-level member in training.
+
+Duties
+basic patrol duties
+assist senior officers
+learn tactical procedures
+
+Black Halo Officer
+Fully trained enforcement officer.
+
+Duties
+arrest suspects
+patrol restricted areas
+support MP operations
+
+Senior Halo Officer
+Experienced tactical officer.
+
+Duties
+lead small teams
+manage arrests
+coordinate with Military Police
+
+Halo Enforcement Commander
+Tactical leader for operations.
+
+Duties
+command enforcement missions
+handle high-risk arrests
+manage security operations
+
+Director of Halo Enforcement
+Leader of the division.
+
+Duties
+control division strategy
+authorize raids and investigations
+coordinate with Intelligence and Cyber Warfare
+
+Supreme Halo Marshal
+Highest authority of Black Halo Division.
+
+Authority
+override normal law enforcement procedures
+command emergency enforcement operations
+report directly to Grand High Command`
+            },
+
+            doc16: {
+                level: 7.5,
+                title: "Internal Affairs Infos",
+                text: `Internal Affairs Rank Tree
+
+classification: Level 7.5 [Classified] [IA]
+
+Internal Affairs
+Division Role:
+Investigate misconduct, corruption, abuse of authority, and security violations within the Furr Army and all divisions.
+
+Authority:
+investigate any division
+review incident reports
+interrogate personnel
+recommend disciplinary actions
+report directly to High Command
+
+IA Recruit
+Entry-level investigator in training.
+
+Duties
+assist investigations
+collect reports
+observe interrogations
+
+Internal Affairs Investigator
+Duties
+investigate rule violations
+interview witnesses
+gather evidence
+
+Senior IA Investigator
+Duties
+lead investigations
+analyze disciplinary cases
+supervise investigators
+
+Internal Affairs Inspector
+Duties
+audit divisions
+inspect security procedures
+investigate high-ranking personne
+
+IA Operations Commander
+Duties
+control major investigations
+coordinate with Military Court and MP
+approve disciplinary actions
+
+Director of Internal Affairs
+Highest authority of IA.
+
+Authority
+open investigations against any division
+review corruption cases
+submit cases to the Military Court System
+
+Reports directly to:
+Grand High Command
+Military Court Judges`
+            },
+
+            doc17: {
+                level: 8,
+                title: "Records & Archives Division Infos",
+                text: `Records & Archives Division Rank Tree
+
+classification: Level 8 [Classified] [R & A]
+
+Records & Archives Division
+Division Role:
+Store, organize, and protect all official records and classified documents of Reelmind Corp.
+
+Main Responsibilities
+archive research files
+store personnel records
+protect classified documents
+maintain historical facility records
+control document access permissions
+
+Works with:
+Administration Division
+Internal Affairs
+Intelligence Agency
+Anomaly Investigation Unit
+Cyber Warfare Division
+
+Archive Assistant
+Entry-level archivist.
+
+Duties
+organize documents
+catalog files
+assist senior archivist
+
+Records Clerk
+Duties
+maintain personnel records
+process documentation requests
+update database systems
+
+Senior Archivist
+Duties
+supervise document storage
+manage classified archives
+organize historical records
+
+Records Supervisor
+Duties
+oversee archive departments
+approve document access requests
+maintain archive security
+
+Archive Operations Commander
+Duties
+control archive operations
+coordinate with intelligence divisions
+manage classified record storage
+
+Director of Records & Archives
+Highest authority of RAD.
+
+Responsibilities
+control all document archives
+approve access to high-level classified files
+maintain long-term historical records of Reelmind Corp.
+
+Reports directly to:
+High Command
+Administration Leadership`
+            },
+
+            doc18: {
+                level: 9,
+                title: "Administration Division Infos",
+                text: `Administration Division Rank Tree
+
+classification: Level 9 [Classified] [Administrativ]
+
+Administration Division
+Division Role:
+Handle administrative operations, personnel records, documentation, and coordination across all divisions.
+
+Main Responsibilities
+manage personnel records
+organize promotions and applications
+maintain official documents
+coordinate divisions
+support High Command administration
+
+Administrative Assistant
+Entry-level administrative staff.
+
+Duties
+organize files
+assist with paperwork
+maintain basic records
+
+Administrative Officer
+Duties
+process promotion forms
+manage personnel documents
+assist division leadership
+
+Senior Administrative Officer
+Duties
+supervise administrative staff
+handle important documentation
+coordinate division records
+
+Administration Supervisor
+Duties
+manage administrative departments
+oversee personnel records
+ensure documentation accuracy
+
+Administration Operations Commander
+Duties
+coordinate administration across divisions
+approve official documents
+manage administrative operations
+
+Director of Administration
+Highest authority of the Administration Division.
+
+Responsibilities
+manage all administrative systems
+approve promotions and official records
+support High Command operations
+
+Reports directly to:
+Grand High Command
+Reelmind Leadership`
+            }
+
+        };
+
+        /* SLOW PRINT */
+
+        function slowPrint(text, speed = 25) {
+
+            const output = document.getElementById("output");
+
+            output.innerText = "";
+
+            let i = 0;
+
+            function type() {
+
+                if (i < text.length) {
+
+                    output.innerText += text.charAt(i);
+                    i++;
+
+                    /* AUTO SCROLL */
+                    output.scrollTop = output.scrollHeight;
+
+                    setTimeout(type, speed);
+
+                }
+
+            }
+
+            type();
+        }
+
+        /* LOGIN */
+
+        function login() {
+
+            let u = document.getElementById("user").value
+            let p = document.getElementById("pass").value
+
+            if (users[u] && users[u].password === p) {
+
+                currentUser = users[u]
+
+                document.getElementById("loginPanel").style.display = "none"
+                document.getElementById("dashboard").style.display = "block"
+
+                boot()
+                loadDocuments()
+
+            }
+            else {
+                document.getElementById("status").innerText = "ACCESS DENIED"
+            }
+
+        }
+
+        /* TERMINAL BOOT */
+
+        function boot() {
+
+            let lines = [
+                "Connecting to Reelmind Servers...",
+                "Authenticating Operator...",
+                "Rank: " + currentUser.rank,
+                "Team: " + currentUser.team,
+                "Clearance Level: " + currentUser.clearance,
+                "Access Granted."
+            ]
+
+            let i = 0
+
+            let interval = setInterval(() => {
+
+                document.getElementById("output").innerHTML += lines[i] + "\n"
+
+                i++
+
+                if (i >= lines.length) clearInterval(interval)
+
+            }, 600)
+
+        }
+
+        /* CREATE DOCUMENT BUTTONS (VISIBILITY SYSTEM) */
+
+        function loadDocuments() {
+
+            const container = document.getElementById("docButtons")
+
+            container.innerHTML = ""
+
+            for (const id in documents) {
+
+                let doc = documents[id]
+
+                if (currentUser.clearance >= doc.level) {
+
+                    let btn = document.createElement("button")
+
+                    btn.innerText = doc.title
+
+                    btn.onclick = () => showDocument(id)
+
+                    container.appendChild(btn)
+
+                }
+
+            }
+
+        }
+
+        /* SHOW DOCUMENT */
+
+        function showDocument(doc) {
+
+            let file = documents[doc]
+
+            if (currentUser.clearance < file.level) {
+
+                slowPrint(
+                    "ACCESS DENIED\nREQUIRED CLEARANCE LEVEL: " + file.level,
+                    20
+                )
+
+                return
+            }
+
+            slowPrint(file.text, 25)
+
+        }
+
+        /* UI SWITCH */
+
+        function openTerminal() {
+            document.getElementById("terminalView").style.display = "block"
+            document.getElementById("docsView").style.display = "none"
+        }
+
+        function openDocs() {
+            document.getElementById("terminalView").style.display = "none"
+            document.getElementById("docsView").style.display = "block"
+        }
+
+    </script>
