@@ -184,7 +184,7 @@
                 const data = await response.json();
                 if (data.version !== CURRENT_VERSION) {
                     alert("A new version is available! Reloading...");
-                    location.reload(true);
+                    window.location.href = window.location.href; // forces reload
                 } else {
                     console.log("Terminal is up-to-date.");
                 }
