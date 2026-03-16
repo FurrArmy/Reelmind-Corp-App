@@ -175,6 +175,46 @@
 
     <script>
 
+<script>
+const CURRENT_VERSION = "0.6.0"; // local version
+</script>
+
+</script>
+async function checkForUpdates() {
+    try {
+        // Get remote version.json from GitHub (raw URL)
+        const response = await fetch("https://raw.githubusercontent.com/FurrArmy/Reelmind-Corp-App/refs/heads/main/github/app-version.json");
+        const data = await response.json();
+
+        if (data.version !== CURRENT_VERSION) {
+            console.log(`Update found: ${data.version}`);
+            
+            // Option 1: Alert user and reload page (simplest)
+            alert("A new version is available! Reloading...");
+            location.reload(true);
+
+            // Option 2: Automatically fetch new HTML (advanced)
+            // const htmlResponse = await fetch("https://raw.githubusercontent.com/FurrArmy/Reelmind-Corp-App/refs/heads/main/github/Reelmind_Corp_Terminal_V_Alpha_0.6.html");
+            // const newHTML = await htmlResponse.text();
+            // document.open();
+            // document.write(newHTML);
+            // document.close();
+        } else {
+            console.log("Terminal is up-to-date.");
+        }
+    } catch (err) {
+        console.error("Update check failed:", err);
+    }
+}
+
+// Run on page load
+window.onload = () => {
+    checkForUpdates();
+};
+</script>    
+
+    
+
         /* USER DATABASE */
 
         const users = {
