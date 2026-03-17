@@ -411,23 +411,47 @@
                 team: "Grand High Command",
                 clearance: 10
             },
+            MPTC: {
+                password: "MPTC",
+                rank: "MP Instructor Candidate",
+                team: "MP Trainer Command",
+                crearance: 4,5
+            },
+            MP_4_3: {
+                password: "MP4.3",
+                rank: "",
+                team: "Military Police Division",
+                crearance: 4.3
+            },
+            MP_4_2: {
+                password: "MP4.2",
+                rank: "",
+                team: "Military Police Division",
+                crearance: 4.2
+            },
+            MP_4: {
+                password: "MP4",
+                rank: "MP Recruit",
+                team: "Military Police Division",
+                crearance: 4
+            },
             TDR_12th: {
                 password: "12th",
                 rank: "Heli Instructor Cadet",
                 team: "Helicopter Troop [Trainer]",
-                clearance: 1.5
+                clearance: 3.5
             },
             HR_6th: {
                 password: "6th",
                 rank: "Company Commander",
                 team: "Tank Division [HR]",
-                clearance: 1.3
+                clearance: 3
             },
             MR_4th: {
                 password: "4th",
                 rank: "Jet Pilot",
                 team: "Air Furrs Cavalry [MR]",
-                clearance: 1.2
+                clearance: 2
             },
             GSPLR: {
                 password: "GSP",
@@ -1890,7 +1914,7 @@ Imprtant Notes:
             },
 
             fa3: {
-                level: 1.2,
+                level: 2,
                 title: "Information To 12th 6th 4th GSP Ranks [MR]",
                 text: `12th 6th 4th GSP [MR] Rank Structure
                 
@@ -1933,7 +1957,7 @@ Sergeant Description: Squad leader`
             },
 
             fa4: {
-                level: 1.3,
+                level: 3,
                 title: "Information To 12th 6th 4th GSP Ranks [HR]",
                 text: `12th 6th 4th GSP [HR] Rank Structure
                 
@@ -1978,7 +2002,7 @@ Second Lieutenant---------Platoon commander`
             },
 
             fa5: {
-                level: 1.5,
+                level: 3.5,
                 title: "Information To 12th 6th 4th GSP Ranks [Trainer]",
                 text: `12th 6th 4th GSP [Trainer] Rank Structure
                 
@@ -2054,7 +2078,309 @@ HR Event to Rank up
 
 And Dont Forget To do the !!!!EXAMS!!!!`
 
-          }
+          },
+
+            fa5: {
+                level: 4,
+                title: "Information To MP [LR]",
+                text: `MP [LR] Rank Structure
+                
+classification: Level 4 [Law Entforcement]
+
+LR MP =Low Rank (Patrol & Enforcement)
+
+Security Response Officer----Responds to emergency situations
+Field Patrol Specialist------Handles base security operations
+Senior MP Officer------------Conducts detainments & reports
+Military Police Officer------Authorized to patrol & issue warnings
+MP Recruit-------------------Basic MP training / No arrest authority without supervision`
+          },
+
+            fa6: {
+                level: 4.2,
+                title: "Information To MP [MR]",
+                text: `MP [MR] Rank Structure
+
+classification: Level 4.2 [Law Entforcement]
+
+MR MP =Medium Rank (Supervisory & Investigative)
+
+Deputy Provost Officer----------Second-in-command of MP operations
+Provost Supervisor--------------Oversees law enforcement procedures
+Tactical Response Leader--------Commands rapid response units
+Investigation Officer-----------Conducts internal investigations
+MP Sergeant [Pass MP MR Exam]  [Can Apply For judge]
+MP Sergeant Des: Leads patrol squads`
+            },
+
+            fa7: {
+                level: 4.3,
+                title: "Information To MP [HR]",
+                text: `MP [HR] Rank Structure
+
+classification: Level 4.3 [Law Entforcement]
+
+HR MP =High Rank (Command Authority)
+
+Inspector General of Military Justice
+Des: Highest rank within FAMPD / Oversees investigations & disciplinary law
+High Security Marshal  [Can Apply for Classified]
+Des: Supreme authority over discipline & enforcement
+Chief of Military Police ------Oversees all MP operations
+Provost Officer [Pass MP HR Exam]
+Provost Officer Des: Division commander of Military Police`
+            },
+
+            fa8: {
+                level: 4,
+                title: "authority-overview & MP Handbook",
+                text: `authority-overview & MP Handbook
+
+classification: Level 4 [Law Entforcement]
+
+| Rank Tier | Detain    | Arrest          | Suspend   | Recommend Court  |
+| --------- | --------- | --------------- | --------- | ---------------- |
+| LR        | ⚠ Limited | ❌ No            | ❌ No      | ❌ No             |
+| MR        | ✅ Yes     | ⚠ With evidence | ⚠ Limited | ✅ Yes            |
+| HR        | ✅ Yes     | ✅ Yes           | ✅ Yes     | ✅ Full Authority |
+
+
+🚨 FURR ARMY MILITARY POLICE DIVISION
+MP Arrest & Discipline Handbook
+
+Classification: Official Enforcement Doctrine
+Applies To: All FAMPD Personnel
+
+I. PURPOSE
+
+The purpose of the Military Police Division is to:
+
+Maintain order and discipline
+
+Protect all Furr Army personnel
+
+Enforce official rules and regulations
+
+Conduct lawful investigations
+
+Uphold fairness and professionalism
+
+MP authority exists to protect, not intimidate.
+
+II. MP CODE OF CONDUCT
+
+All MP personnel must:
+
+Act professionally at all times
+
+Remain neutral and unbiased
+
+Use minimum force necessary
+
+Document all enforcement actions
+
+Respect chain of command
+
+Never abuse authority
+
+Violation of this code results in investigation and possible removal.
+
+III. LEVELS OF DISCIPLINARY ACTION
+🟢 Level 1 – Verbal Warning
+
+Used for:
+
+Minor misconduct
+
+First-time offenses
+
+Minor disrespect
+
+Procedure:
+
+Issue warning clearly
+
+Log warning in report system
+
+🟡 Level 2 – Formal Written Warning
+
+Used for:
+
+Repeated minor misconduct
+
+Disruptive behavior
+
+Procedure:
+
+Document incident
+
+Notify MR+ MP supervisor
+
+🟠 Level 3 – Detainment
+
+Used for:
+
+Refusal to follow lawful orders
+
+Active disruption
+
+Security risk behavior
+
+Procedure:
+
+Clearly state reason for detainment
+
+Escort subject to holding area
+
+Document incident
+
+Notify MR+ command
+🔴 Level 4 – Arrest
+
+Used for:
+
+Major rule violations
+
+Severe misconduct
+
+Threats to base security
+
+Abuse of rank
+
+Procedure:
+
+State charges clearly
+
+Secure the individual
+
+Inform HR+ MP authority
+
+File full incident report
+
+Recommend disciplinary action
+
+⚫ Level 5 – Suspension Recommendation
+
+Used for:
+
+Severe abuse of power
+
+Repeated misconduct
+
+Sabotage or corruption
+
+Only HR+ may approve suspension.
+
+IV. ARREST PROCEDURE (STANDARD PROTOCOL)
+
+Identify yourself as Military Police
+
+State the violation
+
+Give one lawful compliance opportunity
+
+If non-compliant → detain
+
+Escort safely
+
+File official report
+
+MPs must never:
+
+Arrest without reason
+
+Use personal bias
+
+Publicly humiliate suspects
+
+Ignore evidence
+
+V. USE OF FORCE POLICY
+
+Force must be:
+
+Necessary
+
+Proportional
+
+Authorized
+
+Escalation Scale:
+
+Verbal Command
+
+Warning
+
+Detainment
+
+Arrest
+
+Excessive force = automatic Internal Affairs review.
+
+VI. INTERNAL AFFAIRS & MP DISCIPLINE
+
+If an MP:
+
+Abuses authority
+
+Makes false arrests
+
+Shows bias
+
+Harasses members
+
+An Internal Affairs investigation will begin.
+
+Possible consequences:
+
+Demotion
+
+Suspension
+
+Removal from MP Division
+
+Permanent rank restriction
+
+VII. CHAIN OF AUTHORITY
+Rank Tier    Authority Level
+LR    Patrol & Warning
+MR    Arrest & Investigation
+HR    Suspension & Division Authority
+
+High Security Marshal & Inspector General have ultimate enforcement oversight.
+
+VIII. REPORTING FORMAT
+
+Every enforcement action must include:
+
+Name of subject
+
+Rank
+
+Violation committed
+
+Evidence
+
+Witnesses
+
+Action taken
+
+MP Signature
+
+Failure to document = policy violation.
+
+IX. FINAL PRINCIPLE
+
+Military Police power is built on:
+
+⚖ Fairness
+🛡️ Integrity
+📜 Discipline
+👑 Responsibility
+
+Without discipline, there is no order.
+Without fairness, there is no justice.`
+            }
 
         };
 
