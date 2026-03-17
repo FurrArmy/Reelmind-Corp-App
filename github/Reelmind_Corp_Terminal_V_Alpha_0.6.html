@@ -129,7 +129,16 @@
         <div class="logo">REELMIND CORP COMMAND SYSTEM</div>
     </div>
 
-    <div class="login" id="loginPanel">
+    <div class="login" id="selectPanel">
+
+        <h2>Select System</h2>
+
+        <button onclick="selectSystem('reelmind')">Reelmind Corp</button>
+        <button onclick="selectSystem('furrarmy')">Furr Army</button>
+
+    </div>
+
+    <div class="login" id="loginPanel" style="display:none;">
 
         <h2>Operator Login</h2>
 
@@ -175,33 +184,49 @@
 
     <script>
         async function syncWithRemote() {
-    const remoteHTML = "https://raw.githubusercontent.com/FurrArmy/Reelmind-Corp-App/main/github/Reelmind_Corp_Terminal_V_Alpha_0.6.html";
+            const remoteHTML = "https://raw.githubusercontent.com/FurrArmy/Reelmind-Corp-App/main/github/Reelmind_Corp_Terminal_V_Alpha_0.6.html";
 
-    try {
-        const response = await fetch(remoteHTML);
-        if (!response.ok) throw new Error("Failed to fetch remote app");
-        const newHTML = await response.text();
-        document.open();
-        document.write(newHTML);
-        document.close();
-    } catch (err) {
-        console.error("Sync failed:", err);
-        alert("Could not sync with the latest app. Running local version.");
-    }
-}
+            try {
+                const response = await fetch(remoteHTML);
+                if (!response.ok) throw new Error("Failed to fetch remote app");
+                const newHTML = await response.text();
+                document.open();
+                document.write(newHTML);
+                document.close();
+            } catch (err) {
+                console.error("Sync failed:", err);
+                alert("Could not sync with the latest app. Running local version.");
+            }
+        }
 
-// Run sync on page load
-window.onload = () => {
-    syncWithRemote();
-};
+        // Run sync on page load
+        window.onload = () => {
+            syncWithRemote();
+        };
 
-    
 
-    
+
+
 
         /* USER DATABASE */
 
-        const users = {
+        let currentSystem = null;
+
+        function selectSystem(system) {
+            currentSystem = system;
+
+            document.getElementById("selectPanel").style.display = "none";
+            document.getElementById("loginPanel").style.display = "block";
+
+            if (system === "furrarmy") {
+                document.querySelector("#loginPanel h2").innerText = "Furr Army Login";
+            } else {
+                document.querySelector("#loginPanel h2").innerText = "Reelmind Operator Login";
+            }
+        }
+
+        /* REELMIND USERS */
+        const reelmindUsers = {
 
             Travis: {
                 password: "Travis Reelmind",
@@ -217,20 +242,19 @@ window.onload = () => {
                 clearance: 10
             },
 
-             AD4: {
+            AD4: {
                 password: "AD4",
-                rank: "Administration Supervisor ",
+                rank: "Administration Supervisor",
                 team: "Administration Division",
                 clearance: 9
             },
 
             AD3: {
                 password: "AD3",
-                rank: "Senior Administrative Officer ",
+                rank: "Senior Administrative Officer",
                 team: "Administration Division",
                 clearance: 9
             },
-
 
             AD2: {
                 password: "AD2",
@@ -297,28 +321,28 @@ window.onload = () => {
 
             CRT: {
                 password: "CRT",
-                rank: "Containment Recruit ",
+                rank: "Containment Recruit",
                 team: "Response Operators [CRT] [LR]",
                 clearance: 4
             },
 
             HCU: {
                 password: "HCU",
-                rank: "Hazard Control Recruit ",
-                team: "Hazard Response Personnel [HUC] [LR]",
+                rank: "Hazard Control Recruit",
+                team: "Hazard Response Personnel [HCU] [LR]",
                 clearance: 3.5
             },
 
             CWD: {
                 password: "CWD",
-                rank: "Cyber Recruit ",
+                rank: "Cyber Recruit",
                 team: "Cyber Technicians [CWD] [LR]",
                 clearance: 3
             },
 
             ETD: {
                 password: "ETD",
-                rank: "Junior Research Assistant ",
+                rank: "Junior Research Assistant",
                 team: "Research Personnel [ETD] [LR]",
                 clearance: 3
             },
@@ -332,15 +356,15 @@ window.onload = () => {
 
             Engi: {
                 password: "Engi",
-                rank: "Engineering Recruit  [LR]",
+                rank: "Engineering Recruit [LR]",
                 team: "Junior Engineers",
                 clearance: 1.2
             },
 
             Medic: {
                 password: "Medic",
-                rank: "Medical Intern  [LR]",
-                team: "Medical Support Staff ",
+                rank: "Medical Intern [LR]",
+                team: "Medical Support Staff",
                 clearance: 1.3
             },
 
@@ -360,8 +384,8 @@ window.onload = () => {
 
             RBST: {
                 password: "ST",
-                rank: "Junior Security Trainer  [Security Trainer]",
-                team: "Reelmind Base Security Trainers ",
+                rank: "Junior Security Trainer [Security Trainer]",
+                team: "Reelmind Base Security Trainers",
                 clearance: 2
             },
 
@@ -371,14 +395,29 @@ window.onload = () => {
                 team: "Guest",
                 clearance: 0
             }
+        };
 
+        /* FURR ARMY USERS */
+        const furrArmyUsers = {
+            Mike: {
+                password: "Lt.Mike",
+                rank: "High Marshal of Unified Forces",
+                team: "Grand High Command",
+                clearance: 10
+            },
+            Travis: {
+                password: "Reelmind",
+                rank: "Supreme Commander of the Furr Army",
+                team: "Grand High Command",
+                clearance: 10
+            }
         };
 
         let currentUser = null;
 
         /* DOCUMENT DATABASE */
 
-        const documents = {
+        const reelmindDocuments = {
 
             doc1: {
                 level: 0,
@@ -423,7 +462,7 @@ Thank you for your cooperation.
 
 [Travis Reelmind] [Lt.Mike]
 `
-},
+            },
 
             doc2: {
                 level: 1.5,
@@ -449,7 +488,7 @@ Experienced guard
 Assists new recruits
 Handles minor incidents
 
-Security MR [Can Apply For Cyber Warfare Division]  
+Security MR [Can Apply For Cyber Warfare Division]
 
 Security Specialist
 Advanced patrol duties
@@ -487,7 +526,7 @@ Director of Security Operations
 Oversees all security strategy
 Works with ownership and high command
 `
-},
+            },
 
             doc3: {
                 level: 1.4,
@@ -590,8 +629,8 @@ classification: Level 1.2 - Engineering Personnel
 
 Junior Engineers [LR]
 
-Engineering Recruit 
-Junior Technician 
+Engineering Recruit
+Junior Technician
 Field Mechanic
 Systems Technician
 
@@ -602,9 +641,9 @@ Maintain equipment
 
 Professional Engineers [MR]
 
-Engineering Specialist 
+Engineering Specialist
 Systems Engineer
-Infrastructure Engineer 
+Infrastructure Engineer
 Senior Systems Enginee
 
 Role:
@@ -616,8 +655,8 @@ Lead small engineering teams
 Command Engineers [HR]
 
 Chief Systems Engineer
-Engineering Operations Commander 
-Director of Engineering 
+Engineering Operations Commander
+Director of Engineering
 
 Role:
 Oversee entire facility infrastructure
@@ -631,13 +670,13 @@ Manage all engineering personnel`
                 text: `Logistic Rank Tree
 
 classification: Level 1 - Logistics Personnel
-                
+
 Logistics Personnel [LR]
 
-Logistics Recruit 
+Logistics Recruit
 Supply Assistant
-Warehouse Operator 
-Transport Operator 
+Warehouse Operator
+Transport Operator
 
 Duties
 Manage supply crates
@@ -646,10 +685,10 @@ Basic inventory tracking
 
 Logistics Specialists [MR]
 
-Supply Specialist 
-Transport Coordinator 
+Supply Specialist
+Transport Coordinator
 Logistics Supervisor
-Senior Logistics Officer 
+Senior Logistics Officer
 
 Duties
 Coordinate supply deliveries
@@ -658,9 +697,9 @@ Oversee LR personnel
 
 Logistics Command [HR]
 
-Logistics Operations Commander 
+Logistics Operations Commander
 Director of Logistics
-Chief Logistics Commander 
+Chief Logistics Commander
 
 Duties
 Control all supply chains
@@ -675,7 +714,7 @@ Coordinate with military divisions`
 
 classification: Level 2
 
-Reelmind Base Security Trainers 
+Reelmind Base Security Trainers
 Junior Security Trainer
 
 Assist training sessions
@@ -683,21 +722,21 @@ Help recruits during simulations
 Run basic patrol training
 Support Senior Trainers
 
-Security Trainer 
+Security Trainer
 
 Lead recruit training
 Conduct patrol and response drills
 Run written exams
 Approve Recruit → Guard promotions
 
-Senior Security Trainer 
+Senior Security Trainer
 
 Lead advanced training programs
 Train MR personnel
 Certify new trainers
 Oversee training standards
 
-Chief Training Officer 
+Chief Training Officer
 
 Head of all Base Security training
 Designs training programs
@@ -709,15 +748,15 @@ Reports to Chief of Base Security`
                 level: 3,
                 title: "Reelmind Experimental Technology Division Infos/ Cyber Warfare Division",
                 text: `Experimental Technology Division / Cyber Warfare Division Rank Tree
-                
+
 classification: Level 3
 
 Research Personnel [ETD] [LR]
 
-Junior Research Assistant 
-Technology Technician 
+Junior Research Assistant
+Technology Technician
 Prototype Technician
-Field Testing Assistant 
+Field Testing Assistant
 
 Duties
 Assist scientists
@@ -727,10 +766,10 @@ Record experiment results
 
 Technology Specialists [ETD] [MR]
 
-Research Specialist 
-Prototype Engineer 
-Experimental Systems Analyst 
-Senior Technology Officer 
+Research Specialist
+Prototype Engineer
+Experimental Systems Analyst
+Senior Technology Officer
 
 Duties
 Design experimental systems
@@ -740,9 +779,9 @@ Oversee LR personnel
 
 Research Command [ETD] [HR]
 
-Experimental Operations Commander 
-Director of Experimental Technology 
-Chief Science Commander 
+Experimental Operations Commander
+Director of Experimental Technology
+Chief Science Commander
 
 Duties
 Approve research projects
@@ -788,9 +827,9 @@ supervise LR personnel
 
 Cyber Command [CWD] [HR]
 
-Cyber Operations Commander 
-Director of Cyber Warfare 
-Chief Cyber Strategist 
+Cyber Operations Commander
+Director of Cyber Warfare
+Chief Cyber Strategist
 
 Duties
 plan digital warfare operations
@@ -831,9 +870,9 @@ Handle chemical or biological threats
 
 Hazard Command  [HCU] [HR]
 
-Hazard Operations Commander 
-Director of Hazard Control 
-Chief Containment Commander 
+Hazard Operations Commander
+Director of Hazard Control
+Chief Containment Commander
 
 Duties
 Command major hazard responses
@@ -845,7 +884,7 @@ Approve quarantine protocols`
                 level: 4,
                 title: "Containment Response Team Infos",
                 text: `Containment Response Team Rank Tree
-                
+
 classification: Level 4
 
 Containment Response Team [CRT]
@@ -886,9 +925,9 @@ coordinate with MP and Security
 
 Command [CRT] [HR]
 
-Containment Operations Commander 
-Director of Emergency Containment 
-Chief Containment Strategist 
+Containment Operations Commander
+Director of Emergency Containment
+Chief Containment Strategist
 
 Role
 command large-scale containment events
@@ -903,7 +942,7 @@ coordinate military divisions`
 
 classification 5
 
-Anomaly Investigation Unit 
+Anomaly Investigation Unit
 
 Division Role:
 Investigate and document unidentified events, anomalies, experimental accidents, and unknown entities.
@@ -1038,10 +1077,10 @@ report findings to Reelmind Leadership`
                 level: 6,
                 title: "Personal Medical Division Infos",
                 text: `Personal Medical Division Rank Tree
-                
+
 classification: Level 6 [Classified]
 
-Personal Medical Division 
+Personal Medical Division
 
 Personal Medical Intern
 Assists the Personal Doctor
@@ -1069,7 +1108,7 @@ Reports directly to High Command`
 
 classification: Level 6.6 [Classified]
 
-Directorate Security Guard 
+Directorate Security Guard
 
 Division Role:
 Provide close protection for VIPs, including directors, commanders, and important scientists.
@@ -1086,7 +1125,7 @@ Protection Personnel [LR]
 Directorate Guard Recruit
 VIP Security Guard
 Protection Operator
-Escort Security Specialist 
+Escort Security Specialist
 
 Duties
 escort VIPs
@@ -1099,7 +1138,7 @@ Security Specialists [MR]
 VIP Protection Specialist
 Security Team Leader
 Executive Protection Officer
-Senior Protection Officer 
+Senior Protection Officer
 
 Duties
 lead escort teams
@@ -1109,9 +1148,9 @@ supervise LR personnel
 
 Directorate Protection Command [HR]
 
-Directorate Security Commander 
-Chief Protection Director 
-Director of Executive Security 
+Directorate Security Commander
+Chief Protection Director
+Director of Executive Security
 
 Duties
 plan VIP security operations
@@ -1728,6 +1767,35 @@ FAISD never released the final findings.
 
         };
 
+        /* FURR ARMY DOCUMENTS */
+        const furrArmyDocuments = {
+
+            fa1: {
+                level: 0,
+                title: "Furr Army Welcome File",
+                text: "Welcome to the Furr Army Command System.\n\nAll personnel must follow High Command directives."
+            },
+
+            fa2: {
+                level: 2,
+                title: "Infantry Protocol",
+                text: "Standard infantry combat and patrol procedures..."
+            },
+
+            fa3: {
+                level: 5,
+                title: "Restricted Operations",
+                text: "Classified mission data. Clearance required."
+            },
+
+            fa4: {
+                level: 10,
+                title: "High Command Orders",
+                text: "TOP SECRET: Strategic operations issued by Command."
+            }
+
+        };
+
         /* SLOW PRINT */
 
         function slowPrint(text, speed = 25) {
@@ -1764,9 +1832,11 @@ FAISD never released the final findings.
             let u = document.getElementById("user").value
             let p = document.getElementById("pass").value
 
-            if (users[u] && users[u].password === p) {
+            let database = currentSystem === "furrarmy" ? furrArmyUsers : reelmindUsers;
 
-                currentUser = users[u]
+            if (database[u] && database[u].password === p) {
+
+                currentUser = database[u]
 
                 document.getElementById("loginPanel").style.display = "none"
                 document.getElementById("dashboard").style.display = "block"
@@ -1812,48 +1882,44 @@ FAISD never released the final findings.
 
         function loadDocuments() {
 
-            const container = document.getElementById("docButtons")
+            const container = document.getElementById("docButtons");
+            container.innerHTML = "";
 
-            container.innerHTML = ""
+            let database = currentSystem === "furrarmy"
+                ? furrArmyDocuments
+                : reelmindDocuments;
 
-            for (const id in documents) {
-
-                let doc = documents[id]
+            for (const id in database) {
+                let doc = database[id];
 
                 if (currentUser.clearance >= doc.level) {
 
-                    let btn = document.createElement("button")
+                    let btn = document.createElement("button");
+                    btn.innerText = doc.title;
 
-                    btn.innerText = doc.title
+                    btn.onclick = () => showDocument(id);
 
-                    btn.onclick = () => showDocument(id)
-
-                    container.appendChild(btn)
-
+                    container.appendChild(btn);
                 }
-
             }
-
         }
 
         /* SHOW DOCUMENT */
 
-        function showDocument(doc) {
+        function showDocument(docId) {
 
-            let file = documents[doc]
+            let database = currentSystem === "furrarmy"
+                ? furrArmyDocuments
+                : reelmindDocuments;
+
+            let file = database[docId];
 
             if (currentUser.clearance < file.level) {
-
-                slowPrint(
-                    "ACCESS DENIED\nREQUIRED CLEARANCE LEVEL: " + file.level,
-                    20
-                )
-
-                return
+                slowPrint("ACCESS DENIED\nREQUIRED CLEARANCE LEVEL: " + file.level, 20);
+                return;
             }
 
-            slowPrint(file.text, 25)
-
+            slowPrint(file.text, 25);
         }
 
         /* UI SWITCH */
