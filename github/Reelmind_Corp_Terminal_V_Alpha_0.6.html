@@ -135,7 +135,7 @@
 
     <div class="topbar">
         <div class="logo">REELMIND CORP & FurrArmy COMMAND SYSTEM</div>
-         <div class="version" id="versionText">v0.7.23</div>
+         <div class="version" id="versionText">v0.8.0</div>
     </div>
 
     <div class="login" id="selectPanel">
@@ -144,6 +144,7 @@
 
         <button onclick="selectSystem('reelmind')">Reelmind Corp</button>
         <button onclick="selectSystem('furrarmy')">Furr Army</button>
+        <button onclick="selectSystem('classified')">⚫ Classified Access</button>
 
     </div>
 
@@ -227,10 +228,28 @@
             document.getElementById("selectPanel").style.display = "none";
             document.getElementById("loginPanel").style.display = "block";
 
+            let title = document.querySelector("#loginPanel h2");
+
             if (system === "furrarmy") {
-                document.querySelector("#loginPanel h2").innerText = "Furr Army Login";
-            } else {
-                document.querySelector("#loginPanel h2").innerText = "Reelmind Operator Login";
+                title.innerText = "Furr Army Login";
+
+                // FURR ARMY STYLE
+                document.body.style.background = "#1a0a0a";
+                document.body.style.color = "#ff4444";
+            }
+            else if (system === "classified") {
+                title.innerText = "⚫ Classified Access Login";
+
+                // 🔴 STEP 5 GOES HERE
+                document.body.style.background = "#000000";
+                document.body.style.color = "#ff0033";
+            }
+            else {
+                title.innerText = "Reelmind Operator Login";
+
+                // REELMIND STYLE (default)
+                document.body.style.background = "#0a0f1a";
+                document.body.style.color = "#00eaff";
             }
         }
 
@@ -522,6 +541,26 @@
                 team: "Guest",
                 clearance: 0
             }
+        };
+
+        /* CLASSIFIED USERS */
+
+        const classifiedUsers = {
+
+            Director: {
+                password: "OMEGA",
+                rank: "Black Level Director",
+                team: "Classified Command",
+                clearance: 10
+            },
+
+            Overseer: {
+                password: "BLACK",
+                rank: "System Overseer",
+                team: "Classified Command",
+                clearance: 10
+            }
+
         };
 
         let currentUser = null;
@@ -4318,26 +4357,35 @@ Next time, we may not be 37 seconds away.”`
 
         function login() {
 
-            let u = document.getElementById("user").value
-            let p = document.getElementById("pass").value
+            let u = document.getElementById("user").value;
+            let p = document.getElementById("pass").value;
 
-            let database = currentSystem === "furrarmy" ? furrArmyUsers : reelmindUsers;
+            let database;
+
+            if (currentSystem === "furrarmy") {
+                database = furrArmyUsers;
+            }
+            else if (currentSystem === "classified") {
+                database = classifiedUsers;
+            }
+            else {
+                database = reelmindUsers;
+            }
 
             if (database[u] && database[u].password === p) {
 
-                currentUser = database[u]
+                currentUser = database[u];
+                currentUsername = u;
 
-                document.getElementById("loginPanel").style.display = "none"
-                document.getElementById("dashboard").style.display = "block"
+                document.getElementById("loginPanel").style.display = "none";
+                document.getElementById("dashboard").style.display = "block";
 
-                boot()
-                loadDocuments()
+                boot();
+                loadDocuments();
 
+            } else {
+                document.getElementById("status").innerText = "ACCESS DENIED";
             }
-            else {
-                document.getElementById("status").innerText = "ACCESS DENIED"
-            }
-
         }
 
         /* TERMINAL BOOT */
