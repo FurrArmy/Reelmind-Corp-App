@@ -135,7 +135,7 @@
 
     <div class="topbar">
         <div class="logo">REELMIND CORP & FurrArmy COMMAND SYSTEM</div>
-         <div class="version" id="versionText">v0.8.2</div>
+         <div class="version" id="versionText">v0.8.3</div>
     </div>
 
     <div class="login" id="selectPanel">
@@ -199,9 +199,6 @@
                 const response = await fetch(remoteHTML);
                 if (!response.ok) throw new Error("Failed to fetch remote app");
                 const newHTML = await response.text();
-                document.open();
-                document.write(newHTML);
-                document.close();
             } catch (err) {
                 console.error("Sync failed:", err);
                 alert("Could not sync with the latest app. Running local version.");
@@ -210,7 +207,7 @@
 
         // Run sync on page load
         window.onload = () => {
-            syncWithRemote();
+            console.log("App started");
         };
 
 
@@ -4332,36 +4329,33 @@ Next time, we may not be 37 seconds away.”`
 
         /* LOGIN */
 
-        function login() {
+       function login() {
     const username = document.getElementById("user").value;
     const password = document.getElementById("pass").value;
     const status = document.getElementById("status");
 
     let userDB = null;
 
-    // Select correct system
     if (currentSystem === "reelmind") {
         userDB = reelmindUsers;
     } else if (currentSystem === "furrarmy") {
         userDB = furrArmyUsers;
     } else {
-        status.innerText = "No system selected.";
+        status.innerText = "Select a system first.";
         return;
     }
 
-    // Check user
     if (!userDB[username]) {
         status.innerText = "User not found.";
         return;
     }
 
-    // Check password
     if (userDB[username].password !== password) {
         status.innerText = "Wrong password.";
         return;
     }
 
-    // SUCCESS LOGIN
+    // SUCCESS
     status.innerText = "Access Granted ✔";
 
     document.getElementById("loginPanel").style.display = "none";
