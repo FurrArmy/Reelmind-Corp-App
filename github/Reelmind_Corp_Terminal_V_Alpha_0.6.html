@@ -144,7 +144,6 @@
 
         <button onclick="selectSystem('reelmind')">Reelmind Corp</button>
         <button onclick="selectSystem('furrarmy')">Furr Army</button>
-        <button onclick="selectSystem('classified')">⚫ Classified Access</button>
 
     </div>
 
@@ -542,28 +541,6 @@
                 clearance: 0
             }
         };
-
-        /* CLASSIFIED USERS */
-
-        const classifiedUsers = {
-
-            Director: {
-                password: "OMEGA",
-                rank: "Black Level Director",
-                team: "Classified Command",
-                clearance: 10
-            },
-
-            Overseer: {
-                password: "BLACK",
-                rank: "System Overseer",
-                team: "Classified Command",
-                clearance: 10
-            }
-
-        };
-
-        let currentUser = null;
 
         /* DOCUMENT DATABASE */
 
@@ -4367,9 +4344,6 @@ Next time, we may not be 37 seconds away.”`
             }
             else if (currentSystem === "classified") {
                 database = classifiedUsers;
-            }
-            else {
-                database = reelmindUsers;
             }
 
             if (database[u] && database[u].password === p) {
