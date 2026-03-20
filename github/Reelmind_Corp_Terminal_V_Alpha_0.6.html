@@ -135,7 +135,7 @@
 
     <div class="topbar">
         <div class="logo">REELMIND CORP & FurrArmy COMMAND SYSTEM</div>
-         <div class="version" id="versionText">v0.8.1</div>
+         <div class="version" id="versionText">v0.8.2</div>
     </div>
 
     <div class="login" id="selectPanel">
@@ -508,7 +508,7 @@
                 password: "MP4",
                 rank: "MP Recruit",
                 team: "Military Police Division [LR]",
-                crearance: 4
+                clearance: 4
             },
             TDR_12th: {
                 password: "12th",
@@ -4333,34 +4333,40 @@ Next time, we may not be 37 seconds away.”`
         /* LOGIN */
 
         function login() {
+    const username = document.getElementById("user").value;
+    const password = document.getElementById("pass").value;
+    const status = document.getElementById("status");
 
-            let u = document.getElementById("user").value;
-            let p = document.getElementById("pass").value;
+    let userDB = null;
 
-            let database;
+    // Select correct system
+    if (currentSystem === "reelmind") {
+        userDB = reelmindUsers;
+    } else if (currentSystem === "furrarmy") {
+        userDB = furrArmyUsers;
+    } else {
+        status.innerText = "No system selected.";
+        return;
+    }
 
-            if (currentSystem === "furrarmy") {
-                database = furrArmyUsers;
-            }
-            else if (currentSystem === "classified") {
-                database = classifiedUsers;
-            }
+    // Check user
+    if (!userDB[username]) {
+        status.innerText = "User not found.";
+        return;
+    }
 
-            if (database[u] && database[u].password === p) {
+    // Check password
+    if (userDB[username].password !== password) {
+        status.innerText = "Wrong password.";
+        return;
+    }
 
-                currentUser = database[u];
-                currentUsername = u;
+    // SUCCESS LOGIN
+    status.innerText = "Access Granted ✔";
 
-                document.getElementById("loginPanel").style.display = "none";
-                document.getElementById("dashboard").style.display = "block";
-
-                boot();
-                loadDocuments();
-
-            } else {
-                document.getElementById("status").innerText = "ACCESS DENIED";
-            }
-        }
+    document.getElementById("loginPanel").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+}
 
         /* TERMINAL BOOT */
 
